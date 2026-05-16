@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Verne · Productos químicos de alto desempeño para minería: concentración, hidrometalurgia y commodities. Chile y Perú.">
+<title>Verne · Química para Minería</title>
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<nav id="nav">
+  <div class="brand"><div class="ic">⛏️</div><div><b>VERNE</b><br><small>QUÍMICA MINERA</small></div></div>
+  <div class="nav-links">
+    <a href="#top">Inicio</a><a href="#areas">Soluciones</a><a href="#commodities">Commodities</a><a href="#contacto">Nosotros</a>
+    <a class="cta" href="#contacto">Contacto</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <!-- Para usar un VIDEO real: descomenta y pon la URL/archivo .mp4
+  <video autoplay muted loop playsinline poster="...">
+     <source src="TU_VIDEO_MINERIA.mp4" type="video/mp4">
+  </video> -->
+  <div class="media">
+    <div class="slide act" style="background-image:url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1920&q=80')"></div>
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1920&q=80')"></div>
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1920&q=80')"></div>
+  </div>
+
+  <button class="arrow l" onclick="nav_s(-1)" aria-label="Anterior">‹</button>
+  <button class="arrow r" onclick="nav_s(1)" aria-label="Siguiente">›</button>
+
+  <div class="glass">
+    <div class="glass-grid">
+      <div>
+        <span class="pill" id="hPill">SOLUCIONES MINERAS</span>
+        <h1 id="hTit">PLANTA<span>CONCENTRADORA</span></h1>
+        <div class="sub" id="hSub">Colectores · Espumantes · Xantatos · Depresantes</div>
+      </div>
+      <div class="glass-side">
+        <span class="tag">Atendemos hoy</span>
+        <p id="hAside">Reactivos de alto desempeño para tu proceso de flotación.</p>
+        <button class="btn dark" onclick="abrirArea(curSlide)">Conoce más</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="dots" id="dots"></div>
+  <div class="stat"><div class="n">+70</div><div class="l">Años de respaldo</div></div>
+  <div class="stat"><div class="n">64</div><div class="l">Commodities</div></div>
+  <div class="stat"><div class="n">ISO 9001</div><div class="l">Proveedores</div></div>
+  <div class="stat"><div class="n">2</div><div class="l">Países</div></div>
+</div>
+
+<a class="wa" id="waBtn" target="_blank" rel="noopener"><span class="c">✆</span> Cotiza por WhatsApp</a>
+
+<!-- AREAS -->
+<section class="wrap" id="areas">
+  <div class="head reveal"><small>Soluciones</small><h2>Cobertura total del proceso</h2></div>
+  <div class="areas">
+    <div class="area reveal" onclick="abrirArea(0)">
+      <div class="img" style="background-image:url('https://images.unsplash.com/photo-1565514020179-026b92b2d70b?auto=format&fit=crop&w=900&q=80')"></div>
+      <div class="c"><div class="num">01</div><h3>Planta Concentradora</h3><p>Flotación y espesado · línea Danafloat (FMC).</p><div class="more">Ver productos <span>→</span></div></div>
+    </div>
+    <div class="area reveal" onclick="abrirArea(1)">
+      <div class="img" style="background-image:url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=900&q=80')"></div>
+      <div class="c"><div class="num">02</div><h3>Hidrometalurgia</h3><p>Insumos y reactivos para SX/EW y electrorefinería.</p><div class="more">Ver productos <span>→</span></div></div>
+    </div>
+    <div class="area reveal" onclick="document.getElementById('commodities').scrollIntoView()">
+      <div class="img" style="background-image:url('https://images.unsplash.com/photo-1604762524889-3e2fcc145683?auto=format&fit=crop&w=900&q=80')"></div>
+      <div class="c"><div class="num">03</div><h3>Commodities</h3><p>64 productos químicos certificados ISO 9001.</p><div class="more">Ver catálogo <span>→</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="ctab">
+  <div class="wrap reveal"><h2>Hablemos de tu operación</h2><p>Te ayudamos a seleccionar el reactivo correcto. Respuesta rápida en Chile y Perú.</p><button class="btn" onclick="document.getElementById('contacto').scrollIntoView()">Contactar ahora</button></div>
+</section>
+
+<!-- COMMODITIES -->
+<section class="com-sec" id="commodities">
+  <div class="wrap">
+    <div class="head reveal"><small>Catálogo</small><h2>Commodities químicos</h2></div>
+    <div class="buscador reveal"><input id="filtro" placeholder="🔍 Buscar producto…" oninput="filtrar()" aria-label="Buscar producto"></div>
+    <div class="conteo reveal" id="conteo"></div>
+    <div class="grid-com reveal" id="gridCom"></div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+  <div class="wrap">
+    <div class="head reveal"><small>Contacto</small><h2>Estamos cerca de tu faena</h2></div>
+    <div class="pais-grid">
+      <div class="pais reveal"><h3>🇨🇱 Chile</h3>
+        <div class="row"><b>Dirección</b> Av. Andrés Bello 2777 of. 1801, Las Condes</div>
+        <div class="row"><b>Teléfono</b> +56 2 2885 8633</div>
+        <div class="row"><b>Email</b> <a href="mailto:info@verne.cl">info@verne.cl</a></div></div>
+      <div class="pais reveal"><h3>🇵🇪 Perú</h3>
+        <div class="row"><b>Dirección</b> Schell 690 piso 6, Miraflores, Lima 18</div>
+        <div class="row"><b>Teléfono</b> +51 1 682 3345</div>
+        <div class="row"><b>Email</b> <a href="mailto:info@verne.com.pe">info@verne.com.pe</a></div></div>
+    </div>
+  </div>
+</section>
+
+<footer><p>© 2016 Verne. All Rights Reserved · Sitio demostrativo interactivo.</p></footer>
+
+<!-- MODAL -->
+<div class="modal" id="modal" onclick="if(event.target===this)cerrar()">
+  <div class="mbox">
+    <button class="x" onclick="cerrar()" aria-label="Cerrar">✕</button>
+    <div class="mtop"><small id="mNum"></small><h3 id="mTit"></h3><div class="prov" id="mProv"></div></div>
+    <div class="mbody" id="mBody"></div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
