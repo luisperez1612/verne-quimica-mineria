@@ -24,18 +24,20 @@ const AREAS = [
         { b:"Electrorefinería (ER)", c:["Cola animal","Avitone","Tiourea"] } ] }
 ];
 
-/* Metadatos de categoría: color + abreviatura corta para el "tile" */
+/* Metadatos de categoría: color + ícono + imagen de referencia.
+   La imagen es de stock (Unsplash); si una no carga, el degradado de color
+   mantiene el aspecto profesional. Puedes reemplazar 'img' por fotos reales. */
 const CAT_META = {
-  "Ácidos":                  { color:"#d4564e", ab:"Ac" },
-  "Álcalis y carbonatos":    { color:"#3f7fd6", ab:"OH" },
-  "Sulfatos":                { color:"#8e5bd0", ab:"SO" },
-  "Óxidos":                  { color:"#e8732e", ab:"O₂" },
-  "Nitratos y cloruros":     { color:"#2aa775", ab:"Cl" },
-  "Carbón activado":         { color:"#2f3a48", ab:"C" },
-  "Reactivos de flotación":  { color:"#1796b0", ab:"Fl" },
-  "Minerales y cargas":      { color:"#a07433", ab:"Mn" },
-  "Metales y ferroaleaciones":{ color:"#5c6b7d", ab:"Fe" },
-  "Otros":                   { color:"#7c8aa0", ab:"··" }
+  "Ácidos":                   { color:"#d4564e", icon:"⚗️", img:"https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80" },
+  "Álcalis y carbonatos":     { color:"#3f7fd6", icon:"🧪", img:"https://images.unsplash.com/photo-1581093588401-fbb62a02f120?auto=format&fit=crop&w=600&q=80" },
+  "Sulfatos":                 { color:"#8e5bd0", icon:"💠", img:"https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?auto=format&fit=crop&w=600&q=80" },
+  "Óxidos":                   { color:"#e8732e", icon:"🟠", img:"https://images.unsplash.com/photo-1610478920400-77eb1f3a5b22?auto=format&fit=crop&w=600&q=80" },
+  "Nitratos y cloruros":      { color:"#2aa775", icon:"🧂", img:"https://images.unsplash.com/photo-1628863353691-0071c8c1874c?auto=format&fit=crop&w=600&q=80" },
+  "Carbón activado":          { color:"#2f3a48", icon:"⬛", img:"https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=600&q=80" },
+  "Reactivos de flotación":   { color:"#1796b0", icon:"🫧", img:"https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=600&q=80" },
+  "Minerales y cargas":       { color:"#a07433", icon:"⛰️", img:"https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=600&q=80" },
+  "Metales y ferroaleaciones":{ color:"#5c6b7d", icon:"🔩", img:"https://images.unsplash.com/photo-1565514020179-026b92b2d70b?auto=format&fit=crop&w=600&q=80" },
+  "Otros":                    { color:"#7c8aa0", icon:"📦", img:"https://images.unsplash.com/photo-1604762524889-3e2fcc145683?auto=format&fit=crop&w=600&q=80" }
 };
 
 /* Aplicación típica por categoría (fallback profesional para el modal) */

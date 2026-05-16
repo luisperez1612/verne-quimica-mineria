@@ -78,12 +78,20 @@ function abrirProd(nombre, cat){
 function cerrar(){ M.classList.remove('on'); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrar(); });
 
-/* ---------- Catálogo de commodities (tarjetas + filtro por categoría) ---------- */
-const grid  = document.getElementById('gridCom');
-const cont  = document.getElementById('conteo');
+/* ---------- Catálogo de commodities (carrusel deslizable + filtro) ---------- */
+const grid   = document.getElementById('gridCom');
+const cont   = document.getElementById('conteo');
 const tabsEl = document.getElementById('catTabs');
 let catActiva = "Todos";
 
+/* Info breve para la tarjeta */
+function corta(nombre, cat){
+  const k = nombre.toLowerCase().trim();
+  let t = INFO[k] ? INFO[k][0] : (CAT_USO[cat] || "Producto químico de grado industrial para procesos mineros.");
+  return t.length > 96 ? t.slice(0, 93).trimEnd() + "…" : t;
+}
+
+/* Filtro: tira deslizable de categorías */
 const CATS = ["Todos", ...Array.from(new Set(COMMODITIES.map(p => p.cat)))];
 CATS.forEach(c => {
   const b = document.createElement('button');
@@ -98,31 +106,53 @@ CATS.forEach(c => {
   tabsEl.appendChild(b);
 });
 
+/* Tarjetas con imagen de referencia */
 COMMODITIES.forEach(p => {
-  const meta = CAT_META[p.cat] || { color:"#7c8aa0", ab:"··" };
+  const meta = CAT_META[p.cat] || { color:"#7c8aa0", icon:"📦", img:"" };
   const card = document.createElement('button');
-  card.className = 'com';
+  card.className = 'pcard';
   card.dataset.n = p.n.toLowerCase();
   card.dataset.c = p.cat;
   card.onclick = () => abrirProd(p.n, p.cat);
   card.innerHTML =
-    `<span class="tile" style="background:${meta.color}">${meta.ab}</span>` +
-    `<span class="cinfo"><b>${p.n}</b><small>${p.cat}</small></span>` +
-    `<span class="carrow">→</span>`;
+    `<span class="pimg" style="background-color:${meta.color};background-image:linear-gradient(180deg,rgba(10,22,40,.1),rgba(10,22,40,.55)),url('${meta.img}')">` +
+      `<span class="picon">${meta.icon}</span>` +
+      `<span class="pcat" style="background:${meta.color}">${p.cat}</span>` +
+    `</span>` +
+    `<span class="pbody">` +
+      `<b>${p.n}</b>` +
+      `<small>${corta(p.n, p.cat)}</small>` +
+      `<span class="plink">Ver ficha técnica →</span>` +
+    `</span>`;
   grid.appendChild(card);
 });
 
 function filtrar(){
   const q = document.getElementById('filtro').value.toLowerCase().trim();
-  grid.querySelectorAll('.com').forEach(e => {
+  grid.querySelectorAll('.pcard').forEach(e => {
     const okCat = (catActiva === "Todos") || (e.dataset.c === catActiva);
     const okText = !q || e.dataset.n.includes(q);
     e.classList.toggle('oculto', !(okCat && okText));
   });
-  const vis = grid.querySelectorAll('.com:not(.oculto)').length;
-  cont.textContent = vis + ' de ' + COMMODITIES.length + ' productos · clic para ver ficha técnica';
+  const vis = grid.querySelectorAll('.pcard:not(.oculto)').length;
+  cont.textContent = vis + ' de ' + COMMODITIES.length + ' productos · desliza ◂ ▸ o usa el filtro';
+  grid.scrollTo({ left:0, behavior:'smooth' });
 }
 filtrar();
+
+/* Deslizar: flechas */
+function slide(dir){
+  const card = grid.querySelector('.pcard:not(.oculto)');
+  const step = card ? (card.getBoundingClientRect().width + 16) * 2 : 320;
+  grid.scrollBy({ left: dir * step, behavior:'smooth' });
+}
+
+/* Deslizar: arrastre con el mouse/dedo (sin abrir ficha al arrastrar) */
+let down=false, sx=0, sl=0, moved=0, swallow=false;
+grid.addEventListener('pointerdown', e => { down=true; moved=0; sx=e.pageX; sl=grid.scrollLeft; grid.classList.add('drag'); });
+grid.addEventListener('pointermove', e => { if(!down) return; moved += Math.abs(e.movementX); grid.scrollLeft = sl - (e.pageX - sx); });
+addEventListener('pointerup', () => { if(down && moved>6) swallow=true; down=false; grid.classList.remove('drag'); });
+grid.addEventListener('click', e => { if(swallow){ e.stopPropagation(); e.preventDefault(); swallow=false; } }, true);
 
 /* ---------- Misceláneos ---------- */
 document.getElementById('waBtn').href =
