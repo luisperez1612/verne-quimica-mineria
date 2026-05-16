@@ -107,24 +107,64 @@ CATS.forEach(c => {
 });
 
 /* Tarjetas con imagen de referencia */
-COMMODITIES.forEach(p => {
-  const meta = CAT_META[p.cat] || { color:"#7c8aa0", icon:"📦", img:"" };
+function pcatHtml(p, meta){
+  return `<span class="pcat" style="background:${meta.color}">${p.cat}</span>`;
+}
+
+/* Coloca una foto real dentro de la tarjeta */
+function ponerFoto(card, src, p, meta){
+  const box = card.querySelector('.pimg');
+  if (!box) return;
+  const im = new Image();
+  im.onload = () => {
+    box.classList.add('has-photo');
+    box.innerHTML = '';
+    im.alt = p.n;
+    box.appendChild(im);
+    box.insertAdjacentHTML('beforeend', pcatHtml(p, meta));
+  };
+  im.loading = "lazy";
+  im.src = src;
+}
+
+/* Trae la foto real del producto desde Wikimedia/Wikipedia */
+async function fotoWiki(card, p, meta){
+  if (!p.wiki) return;
+  try {
+    const url = "https://en.wikipedia.org/w/api.php?action=query&format=json" +
+      "&prop=pageimages&piprop=thumbnail&pithumbsize=800&redirects=1&titles=" +
+      encodeURIComponent(p.wiki) + "&origin=*";
+    const j = await (await fetch(url)).json();
+    const pages = j && j.query && j.query.pages;
+    const first = pages && Object.values(pages)[0];
+    const src = first && first.thumbnail && first.thumbnail.source;
+    // Usar solo fotos reales; descartar diagramas/fórmulas (SVG)
+    if (src && !/\.svg(\.|$)/i.test(src) && !/\/svg\//i.test(src)) ponerFoto(card, src, p, meta);
+  } catch (e) { /* sin foto: queda el panel de respaldo */ }
+}
+
+COMMODITIES.forEach((p, idx) => {
+  const meta = CAT_META[p.cat] || { color:"#7c8aa0", icon:"📦" };
   const card = document.createElement('button');
   card.className = 'pcard';
   card.dataset.n = p.n.toLowerCase();
   card.dataset.c = p.cat;
   card.onclick = () => abrirProd(p.n, p.cat);
+  // Panel de marca = placeholder mientras carga la foto real / respaldo
   card.innerHTML =
-    `<span class="pimg" style="background-color:${meta.color};background-image:linear-gradient(180deg,rgba(10,22,40,.1),rgba(10,22,40,.55)),url('${meta.img}')">` +
-      `<span class="picon">${meta.icon}</span>` +
-      `<span class="pcat" style="background:${meta.color}">${p.cat}</span>` +
+    `<span class="pimg" style="--cc:${meta.color};--a:${130 + (idx % 5) * 14}deg">` +
+      `<span class="pbig">${meta.icon}</span>` +
+      pcatHtml(p, meta) +
     `</span>` +
     `<span class="pbody">` +
       `<b>${p.n}</b>` +
       `<small>${corta(p.n, p.cat)}</small>` +
-      `<span class="plink">Ver ficha técnica →</span>` +
+      `<span class="plink">Ver ficha técnica</span>` +
     `</span>`;
   grid.appendChild(card);
+  // Prioridad: foto propia de Verne (p.img) > foto real de Wikimedia
+  if (p.img) ponerFoto(card, p.img, p, meta);
+  else fotoWiki(card, p, meta);
 });
 
 function filtrar(){

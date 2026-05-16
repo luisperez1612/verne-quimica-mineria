@@ -25,9 +25,9 @@
      <source src="TU_VIDEO_MINERIA.mp4" type="video/mp4">
   </video> -->
   <div class="media">
-    <div class="slide act" style="background-image:url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1920&q=80')"></div>
-    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1920&q=80')"></div>
-    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1920&q=80')"></div>
+    <div class="slide act" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/0/0c/Liebherr_t282_1.jpg')"></div>
+    <div class="slide" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Garzweiler_Tagebau-1230.jpg/1920px-Garzweiler_Tagebau-1230.jpg')"></div>
+    <div class="slide" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Twincreeksblast.jpg/1920px-Twincreeksblast.jpg')"></div>
   </div>
 
   <button class="arrow l" onclick="nav_s(-1)" aria-label="Anterior">‹</button>
@@ -118,6 +118,40 @@
 
 <footer><p>© 2016 Verne. All Rights Reserved · Sitio demostrativo interactivo.</p></footer>
 
+<!-- ASISTENTE / BOT -->
+<div id="botTeaser" class="bot-teaser" role="button" tabindex="0">¿Buscas un producto? <b>Escríbeme</b></div>
+<button id="botFab" class="bot-fab" aria-label="Abrir asistente">
+  <span class="bot-fab-ic" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.9-.9L3 21l1.9-5.6A8.5 8.5 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5z"/>
+      <path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01"/>
+    </svg>
+  </span>
+  <span class="bot-fab-dot"></span>
+</button>
+<section id="botPanel" class="bot-panel" aria-live="polite" aria-label="Asistente Verne">
+  <header class="bot-head">
+    <div class="bot-id">
+      <span class="bot-av" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 14v-3a8 8 0 0 1 16 0v3"/>
+          <path d="M18 13h.5A1.5 1.5 0 0 1 20 14.5v2A1.5 1.5 0 0 1 18.5 18H18z"/>
+          <path d="M6 13h-.5A1.5 1.5 0 0 0 4 14.5v2A1.5 1.5 0 0 0 5.5 18H6z"/>
+          <path d="M19 17v.5a3.5 3.5 0 0 1-3.5 3.5H13"/>
+        </svg>
+      </span>
+      <div><b>Asistente Verne</b><small id="botStatus">En línea · responde al instante</small></div>
+    </div>
+    <button id="botClose" class="bot-close" aria-label="Cerrar">✕</button>
+  </header>
+  <div id="botBody" class="bot-body"></div>
+  <div id="botQuick" class="bot-quick"></div>
+  <form id="botForm" class="bot-input" autocomplete="off">
+    <input id="botInput" type="text" placeholder="Escribe tu consulta…" aria-label="Mensaje">
+    <button type="submit" aria-label="Enviar">➤</button>
+  </form>
+</section>
+
 <!-- MODAL -->
 <div class="modal" id="modal" onclick="if(event.target===this)cerrar()">
   <div class="mbox">
@@ -129,5 +163,6 @@
 
 <script src="js/data.js"></script>
 <script src="js/main.js"></script>
+<script src="js/bot.js"></script>
 </body>
 </html>
