@@ -3,9 +3,10 @@
 Thumbs.db
 desktop.ini
 
-# Editores
+# Editores / herramientas
 .vscode/
 .idea/
+.claude/
 
 # Dependencias / build (por si más adelante se agregan)
 node_modules/
