@@ -24,7 +24,35 @@ const AREAS = [
         { b:"Electrorefinería (ER)", c:["Cola animal","Avitone","Tiourea"] } ] }
 ];
 
-/* Fichas de producto: nombre(min) -> [descripción, aplicación típica] */
+/* Metadatos de categoría: color + abreviatura corta para el "tile" */
+const CAT_META = {
+  "Ácidos":                  { color:"#d4564e", ab:"Ac" },
+  "Álcalis y carbonatos":    { color:"#3f7fd6", ab:"OH" },
+  "Sulfatos":                { color:"#8e5bd0", ab:"SO" },
+  "Óxidos":                  { color:"#e8732e", ab:"O₂" },
+  "Nitratos y cloruros":     { color:"#2aa775", ab:"Cl" },
+  "Carbón activado":         { color:"#2f3a48", ab:"C" },
+  "Reactivos de flotación":  { color:"#1796b0", ab:"Fl" },
+  "Minerales y cargas":      { color:"#a07433", ab:"Mn" },
+  "Metales y ferroaleaciones":{ color:"#5c6b7d", ab:"Fe" },
+  "Otros":                   { color:"#7c8aa0", ab:"··" }
+};
+
+/* Aplicación típica por categoría (fallback profesional para el modal) */
+const CAT_USO = {
+  "Ácidos":"Lixiviación, regulación de pH y limpieza de equipos en planta.",
+  "Álcalis y carbonatos":"Regulación de pH, neutralización y modificación en flotación.",
+  "Sulfatos":"Reactivos de proceso, depresantes y tratamiento de efluentes.",
+  "Óxidos":"Pigmentos, fundentes y aditivos metalúrgicos.",
+  "Nitratos y cloruros":"Coagulación, voladura y reactivos analíticos.",
+  "Carbón activado":"Adsorción de oro (CIP/CIL) y purificación de soluciones.",
+  "Reactivos de flotación":"Colección, depresión y modificación en circuitos de flotación.",
+  "Minerales y cargas":"Medios densos, cargas minerales y ayudas de proceso.",
+  "Metales y ferroaleaciones":"Cementación, reducción y aleación metalúrgica.",
+  "Otros":"Insumos auxiliares de proceso según especificación."
+};
+
+/* Fichas detalladas: nombre(min) -> [descripción, aplicación específica] */
 const INFO = {
   "colectores (ditiofosfatos)":["Reactivos colectores que confieren hidrofobicidad selectiva a los sulfuros metálicos.","Flotación de sulfuros de Cu, Pb, Zn y metales preciosos."],
   "espumantes":["Tensoactivos que estabilizan las burbujas de aire generando una espuma mineralizada estable.","Control del tamaño de burbuja y recuperación en flotación."],
@@ -53,5 +81,70 @@ const INFO = {
   "metabisulfito de sodio":["Agente reductor y depresante; antioxidante.","Depresión de sulfuros y control de residual de oxidante."]
 };
 
-/* Catálogo de commodities */
-const COMMODITIES = ["Aceite de pino","Acero esponja","Ácido clorhídrico","Ácido nítrico","Ácido oxálico","Ácido sulfúrico","Almidón","Alternativa al NaSH","Antiespumantes","Antiincrustantes","Baritina","Bentonita","Bicarbonato de sodio","Bórax","Cal","Carbón activado de coco","Carbón activado de madera","Carbón coke","Carbonato de calcio","Carbonato de potasio","Carbonato de sodio","Ceniza de hueso","Ceniza de soda","Cloruro de bario","Cloruro de calcio","Cloruro férrico","Colector de KCl","Cromita","Cuarzo","Depresor de mercurio","Dióxido de titanio","Dolomita","Ferromanganeso","Ferrosilicio","Ferrotitanio","Fluoruro de sodio","Fosfato monoamónico","Litargirio","Magnetita","Manganeso","MAP soluble","Metabisulfito de sodio","Molibdato de sodio","Nitrato de amonio","Nitrato de calcio","Nitrato de sodio","Óxido de fierro","Óxido de magnesio","Óxido de zinc","Perlita","Peróxido de hidrógeno","Polvo de hierro","Sílica","Silicato de potasio","Silicato de sodio","Soda cáustica sólida","Sulfato de amonio","Sulfato de hierro","Sulfato de sodio","Sulfato de zinc","Sulfuro de sodio","Talco","Urea","Zinc en polvo"];
+/* Catálogo de commodities: nombre + categoría */
+const COMMODITIES = [
+  { n:"Aceite de pino", cat:"Reactivos de flotación" },
+  { n:"Acero esponja", cat:"Metales y ferroaleaciones" },
+  { n:"Ácido clorhídrico", cat:"Ácidos" },
+  { n:"Ácido nítrico", cat:"Ácidos" },
+  { n:"Ácido oxálico", cat:"Ácidos" },
+  { n:"Ácido sulfúrico", cat:"Ácidos" },
+  { n:"Almidón", cat:"Reactivos de flotación" },
+  { n:"Alternativa al NaSH", cat:"Reactivos de flotación" },
+  { n:"Antiespumantes", cat:"Otros" },
+  { n:"Antiincrustantes", cat:"Otros" },
+  { n:"Baritina", cat:"Minerales y cargas" },
+  { n:"Bentonita", cat:"Minerales y cargas" },
+  { n:"Bicarbonato de sodio", cat:"Álcalis y carbonatos" },
+  { n:"Bórax", cat:"Otros" },
+  { n:"Cal", cat:"Álcalis y carbonatos" },
+  { n:"Carbón activado de coco", cat:"Carbón activado" },
+  { n:"Carbón activado de madera", cat:"Carbón activado" },
+  { n:"Carbón coke", cat:"Carbón activado" },
+  { n:"Carbonato de calcio", cat:"Álcalis y carbonatos" },
+  { n:"Carbonato de potasio", cat:"Álcalis y carbonatos" },
+  { n:"Carbonato de sodio", cat:"Álcalis y carbonatos" },
+  { n:"Ceniza de hueso", cat:"Otros" },
+  { n:"Ceniza de soda", cat:"Álcalis y carbonatos" },
+  { n:"Cloruro de bario", cat:"Nitratos y cloruros" },
+  { n:"Cloruro de calcio", cat:"Nitratos y cloruros" },
+  { n:"Cloruro férrico", cat:"Nitratos y cloruros" },
+  { n:"Colector de KCl", cat:"Reactivos de flotación" },
+  { n:"Cromita", cat:"Minerales y cargas" },
+  { n:"Cuarzo", cat:"Minerales y cargas" },
+  { n:"Depresor de mercurio", cat:"Reactivos de flotación" },
+  { n:"Dióxido de titanio", cat:"Óxidos" },
+  { n:"Dolomita", cat:"Minerales y cargas" },
+  { n:"Ferromanganeso", cat:"Metales y ferroaleaciones" },
+  { n:"Ferrosilicio", cat:"Metales y ferroaleaciones" },
+  { n:"Ferrotitanio", cat:"Metales y ferroaleaciones" },
+  { n:"Fluoruro de sodio", cat:"Otros" },
+  { n:"Fosfato monoamónico", cat:"Otros" },
+  { n:"Litargirio", cat:"Óxidos" },
+  { n:"Magnetita", cat:"Minerales y cargas" },
+  { n:"Manganeso", cat:"Metales y ferroaleaciones" },
+  { n:"MAP soluble", cat:"Otros" },
+  { n:"Metabisulfito de sodio", cat:"Reactivos de flotación" },
+  { n:"Molibdato de sodio", cat:"Otros" },
+  { n:"Nitrato de amonio", cat:"Nitratos y cloruros" },
+  { n:"Nitrato de calcio", cat:"Nitratos y cloruros" },
+  { n:"Nitrato de sodio", cat:"Nitratos y cloruros" },
+  { n:"Óxido de fierro", cat:"Óxidos" },
+  { n:"Óxido de magnesio", cat:"Óxidos" },
+  { n:"Óxido de zinc", cat:"Óxidos" },
+  { n:"Perlita", cat:"Minerales y cargas" },
+  { n:"Peróxido de hidrógeno", cat:"Otros" },
+  { n:"Polvo de hierro", cat:"Metales y ferroaleaciones" },
+  { n:"Sílica", cat:"Minerales y cargas" },
+  { n:"Silicato de potasio", cat:"Reactivos de flotación" },
+  { n:"Silicato de sodio", cat:"Reactivos de flotación" },
+  { n:"Soda cáustica sólida", cat:"Álcalis y carbonatos" },
+  { n:"Sulfato de amonio", cat:"Sulfatos" },
+  { n:"Sulfato de hierro", cat:"Sulfatos" },
+  { n:"Sulfato de sodio", cat:"Sulfatos" },
+  { n:"Sulfato de zinc", cat:"Sulfatos" },
+  { n:"Sulfuro de sodio", cat:"Reactivos de flotación" },
+  { n:"Talco", cat:"Minerales y cargas" },
+  { n:"Urea", cat:"Otros" },
+  { n:"Zinc en polvo", cat:"Metales y ferroaleaciones" }
+];
