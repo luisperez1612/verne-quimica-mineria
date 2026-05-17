@@ -78,121 +78,31 @@ function abrirProd(nombre, cat){
 function cerrar(){ M.classList.remove('on'); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrar(); });
 
-/* ---------- Catálogo de commodities (carrusel deslizable + filtro) ---------- */
-const grid   = document.getElementById('gridCom');
-const cont   = document.getElementById('conteo');
-const tabsEl = document.getElementById('catTabs');
-let catActiva = "Todos";
+/* ---------- Catálogo de commodities (simple, sin imágenes) ---------- */
+const grid = document.getElementById('gridCom');
+const cont = document.getElementById('conteo');
 
-/* Info breve para la tarjeta */
-function corta(nombre, cat){
-  const k = nombre.toLowerCase().trim();
-  let t = INFO[k] ? INFO[k][0] : (CAT_USO[cat] || "Producto químico de grado industrial para procesos mineros.");
-  return t.length > 96 ? t.slice(0, 93).trimEnd() + "…" : t;
-}
-
-/* Filtro: tira deslizable de categorías */
-const CATS = ["Todos", ...Array.from(new Set(COMMODITIES.map(p => p.cat)))];
-CATS.forEach(c => {
-  const b = document.createElement('button');
-  b.className = 'cat-tab' + (c === "Todos" ? ' act' : '');
-  b.textContent = c;
-  if (c !== "Todos" && CAT_META[c]) b.style.setProperty('--cc', CAT_META[c].color);
-  b.onclick = () => {
-    catActiva = c;
-    tabsEl.querySelectorAll('.cat-tab').forEach(x => x.classList.toggle('act', x === b));
-    filtrar();
-  };
-  tabsEl.appendChild(b);
-});
-
-/* Tarjetas con imagen de referencia */
-function pcatHtml(p, meta){
-  return `<span class="pcat" style="background:${meta.color}">${p.cat}</span>`;
-}
-
-/* Coloca una foto real dentro de la tarjeta */
-function ponerFoto(card, src, p, meta){
-  const box = card.querySelector('.pimg');
-  if (!box) return;
-  const im = new Image();
-  im.onload = () => {
-    box.classList.add('has-photo');
-    box.innerHTML = '';
-    im.alt = p.n;
-    box.appendChild(im);
-    box.insertAdjacentHTML('beforeend', pcatHtml(p, meta));
-  };
-  im.loading = "lazy";
-  im.src = src;
-}
-
-/* Trae la foto real del producto desde Wikimedia/Wikipedia */
-async function fotoWiki(card, p, meta){
-  if (!p.wiki) return;
-  try {
-    const url = "https://en.wikipedia.org/w/api.php?action=query&format=json" +
-      "&prop=pageimages&piprop=thumbnail&pithumbsize=800&redirects=1&titles=" +
-      encodeURIComponent(p.wiki) + "&origin=*";
-    const j = await (await fetch(url)).json();
-    const pages = j && j.query && j.query.pages;
-    const first = pages && Object.values(pages)[0];
-    const src = first && first.thumbnail && first.thumbnail.source;
-    // Usar solo fotos reales; descartar diagramas/fórmulas (SVG)
-    if (src && !/\.svg(\.|$)/i.test(src) && !/\/svg\//i.test(src)) ponerFoto(card, src, p, meta);
-  } catch (e) { /* sin foto: queda el panel de respaldo */ }
-}
-
-COMMODITIES.forEach((p, idx) => {
-  const meta = CAT_META[p.cat] || { color:"#7c8aa0", icon:"📦" };
+COMMODITIES.forEach(p => {
   const card = document.createElement('button');
-  card.className = 'pcard';
+  card.className = 'com';
   card.dataset.n = p.n.toLowerCase();
-  card.dataset.c = p.cat;
+  card.textContent = p.n;
   card.onclick = () => abrirProd(p.n, p.cat);
-  // Panel de marca = placeholder mientras carga la foto real / respaldo
-  card.innerHTML =
-    `<span class="pimg" style="--cc:${meta.color};--a:${130 + (idx % 5) * 14}deg">` +
-      `<span class="pbig">${meta.icon}</span>` +
-      pcatHtml(p, meta) +
-    `</span>` +
-    `<span class="pbody">` +
-      `<b>${p.n}</b>` +
-      `<small>${corta(p.n, p.cat)}</small>` +
-      `<span class="plink">Ver ficha técnica</span>` +
-    `</span>`;
   grid.appendChild(card);
-  // Prioridad: foto propia de Verne (p.img) > foto real de Wikimedia
-  if (p.img) ponerFoto(card, p.img, p, meta);
-  else fotoWiki(card, p, meta);
 });
+
+function setCont(){
+  const vis = grid.querySelectorAll('.com:not(.oculto)').length;
+  cont.textContent = vis + ' de ' + COMMODITIES.length + ' productos · clic para ver ficha técnica';
+}
+setCont();
 
 function filtrar(){
   const q = document.getElementById('filtro').value.toLowerCase().trim();
-  grid.querySelectorAll('.pcard').forEach(e => {
-    const okCat = (catActiva === "Todos") || (e.dataset.c === catActiva);
-    const okText = !q || e.dataset.n.includes(q);
-    e.classList.toggle('oculto', !(okCat && okText));
-  });
-  const vis = grid.querySelectorAll('.pcard:not(.oculto)').length;
-  cont.textContent = vis + ' de ' + COMMODITIES.length + ' productos · desliza ◂ ▸ o usa el filtro';
-  grid.scrollTo({ left:0, behavior:'smooth' });
+  grid.querySelectorAll('.com').forEach(e =>
+    e.classList.toggle('oculto', q && !e.dataset.n.includes(q)));
+  setCont();
 }
-filtrar();
-
-/* Deslizar: flechas */
-function slide(dir){
-  const card = grid.querySelector('.pcard:not(.oculto)');
-  const step = card ? (card.getBoundingClientRect().width + 16) * 2 : 320;
-  grid.scrollBy({ left: dir * step, behavior:'smooth' });
-}
-
-/* Deslizar: arrastre con el mouse/dedo (sin abrir ficha al arrastrar) */
-let down=false, sx=0, sl=0, moved=0, swallow=false;
-grid.addEventListener('pointerdown', e => { down=true; moved=0; sx=e.pageX; sl=grid.scrollLeft; grid.classList.add('drag'); });
-grid.addEventListener('pointermove', e => { if(!down) return; moved += Math.abs(e.movementX); grid.scrollLeft = sl - (e.pageX - sx); });
-addEventListener('pointerup', () => { if(down && moved>6) swallow=true; down=false; grid.classList.remove('drag'); });
-grid.addEventListener('click', e => { if(swallow){ e.stopPropagation(); e.preventDefault(); swallow=false; } }, true);
 
 /* ---------- Misceláneos ---------- */
 document.getElementById('waBtn').href =
